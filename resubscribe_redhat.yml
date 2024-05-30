@@ -1,0 +1,8 @@
+---
+  - name: unsubscribe from redhat then resubscribe
+    hosts: 192.168.11.83
+    become: yes
+    become_user: root
+    tasks:
+      - name: unsubscribe from redhat
+

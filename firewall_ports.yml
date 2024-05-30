@@ -1,0 +1,30 @@
+---
+- name: Add Listing TCP port to Firewalld
+  hosts: all
+  gather_facts: true
+  become: true
+  tasks:
+
+   - name: Open Apache ports in the firewall
+     firewalld:
+        port: "{{ item }}"
+        permanent: true
+        state: enabled
+     with_items:
+       - "80/tcp"
+       - "443/tcp"
+       - "389/tcp"
+       - "389/udp"
+   
+   - name: Ensure HTTPD service is started
+     ansible.builtin.service:
+        name: httpd
+        state: started
+        enabled: true
+
+   - name: Restart Firewall Service
+     ansible.builtin.service:
+        name: firewalld
+        state: restarted
+
+

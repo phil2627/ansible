@@ -1,0 +1,33 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: install apache2 package
+    yum: name=httpd update_cache=yes state=latest
+    become: true
+       
+  - name: start apache
+    systemd:
+      name: httpd
+      state: started
+      enabled: yes 
+
+  - name: isntall java
+    yum: name=memcached state=latest
+    become: true
+
+  - name: start memcached
+    service: 
+      name: memcached
+      state: started
+
+  - name: install nginx
+    yum: name=nginx state=latest
+
+  - name: start nginx
+    service: 
+      name: nginx
+      state: started
+
