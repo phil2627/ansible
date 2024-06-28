@@ -31,6 +31,7 @@
       ansible.builtin.dnf:
         name: "*"
         state: latest
+      when: ansible_distribution == "RedHat"
 
     - name: Enable dnf module idm:DL1
       ansible.builtin.dnf:
