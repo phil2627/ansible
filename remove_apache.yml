@@ -4,8 +4,8 @@
   become: true
   tasks:
 
-  - name: install apache2 package1
-    yum: name=httpd update_cache=yes state=latest
+  - name: remove apache2 package1
+    yum: name=httpd update_cache=yes state=absent
     become: true
        
   - name: update repository index
