@@ -2,7 +2,7 @@
 #ansibleclient1.iamlab.local	#192.168.11.85
 #ansibleclient2.iamlab.local	#192.168.11.86
 #ansibledb.iamlab.local		#192.168.11.88
-   
+  
 
 [servers]
 192.168.11.85
@@ -10,10 +10,12 @@
 192.168.11.88
 192.168.11.156
 
-[app]
-192.168.11.85
-192.168.11.86
+[app_servers]
+192.168.11.86 
 192.168.11.156
 
-[db]
+[db_servers]
 192.168.11.88
+
+[file_servers]
+192.168.11.85

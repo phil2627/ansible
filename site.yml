@@ -1,0 +1,76 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+  pre_tasks:
+
+  - name: install updates (Redhat)
+    tags: always
+    dnf:
+      update_only: yes
+      update_cache: yes
+    when: ansible_distribution == "Redhat"
+
+  - name: install updates (Ubuntu)
+    tags: always
+    apt:
+      upgrade: dist
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+
+- hosts: app_servers
+  become: true
+  tasks:
+
+  - name: install apache and php for Ubuntu servers
+    tags: apache,apache2, ubuntu
+    apt:
+      name:
+         - apache2
+         - libapache2-mod-php
+      state: latest
+  
+    become: true
+    when: ansible_distribution == "Ubuntu"
+
+  - name: install apache and php for RedHat servers
+    tags: apache,apache2, redhat
+    dnf:
+      name:
+         - httpd
+         - php
+      state: latest
+    when: ansible_distribution == "Redhat"
+
+  - name: start apache
+    systemd: 
+      name: httpd
+      state: started
+      enabled: yes 
+
+  - name: start memcached
+    service: 
+      name: memcached
+      state: started
+
+- hosts: db_servers
+  become: true
+  tasks:
+
+  - name: install mariadb (Redhat)
+    tags: redhat,db,mariadb
+    dnf: 
+      name: mariadb
+      state: latest
+    when: ansible_distribution == "Redhat"
+
+  - name: install mariadb (Ubuntu)
+    tags: ubuntu,db,mariadb
+    apt: 
+      name: mariadb-server
+      state: latest
+    when: ansible_distribution == "Ubuntu"
+
+
+
