@@ -2,121 +2,21 @@
 
 - hosts: all
   become: true
-  tasks:
-  pre_tasks:
+  roles: 
+    - base
 
-  - name: install updates (Redhat)
-    tags: always
-    dnf:
-      update_only: yes
-      update_cache: yes
-    when: ansible_distribution == "Redhat"
-
-  - name: install updates (Ubuntu)
-    tags: always
-    apt:
-      upgrade: dist
-      update_cache: yes
-    when: ansible_distribution == "Ubuntu"
+- hosts: workstations
+  become: true
+  roles:
+    - workstations
 
 - hosts: app_servers
   become: true
-  tasks:
-
-  - name: install apache and php for Ubuntu servers
-    tags: apache,apache2, ubuntu
-    apt:
-      name:
-         - apache2
-         - libapache2-mod-php
-      state: latest
-  
-    become: true
-    when: ansible_distribution == "Ubuntu"
-
-  - name: install apache and php for RedHat servers
-    tags: apache,apache2, redhat
-    dnf:
-      name:
-         - httpd
-         - php
-      state: latest
-    when: ansible_distribution == "RedHat"
-
-  - name: start apache (Redhat)
-    service: 
-      name: httpd
-      state: started
-      enabled: yes 
-    when: ansible_distribution == "RedHat"
-
-  - name: start apache (Ubuntu)
-    systemd:
-      name: apache2
-      state: started
-      enabled: yes
-    when: ansible_distribution == "Ubuntu"
-
-  - name: start memcached
-    service: 
-      name: memcached
-      state: started
-      enabled: yes  
-    when: ansible_distribution == "RedHat"
-
-  - name: copy default html file to site
-    tags: apache,apache2,httpd
-    copy:
-      src: default_site.html
-      dest: /var/www/html/index.html
-      owner: root
-      group: root
-      mode: 0644
+  roles:
+    - app_servers
 
 - hosts: db_servers
   become: true
-  tasks:
-
-  - name: install mariadb (Redhat)
-    tags: redhat,db,mariadb
-    dnf: 
-      name: mariadb
-      state: latest
-    when: ansible_distribution == "RedHat"
-
-  - name: install mariadb (Ubuntu)
-    tags: ubuntu,db,mariadb
-    apt: 
-      name: mariadb-server
-      state: latest
-    when: ansible_distribution == "Ubuntu"
-
-- hosts: all
-  become: true
-  tasks:
-    
-  - name: add shh key for simone
-    tags: always
-    authorized_key:
-      user: simone
-      key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDi6H1xfSkY7LdxYsx38r3SSm91+5RCDpvtHIWOhaOFuzURVQlfpadG1SYmmRSw0ejRwAjTOGs6fYn+Dj8IOkFsutF6nh7O5g0ihe2wRfHZSk7reqDbUvRMDK2lWzI38yRTJjpV4aRfI6p22ATk1l0VR6Mr/VW4kef5+sbMP6SfEVlftNDJ5Rov2Vy0bDvHG0RXm2PYBokgKPSYWls1KUKuh5wgD2fhhjRfD55sicLe9k9X89H0gIS2RGie2ZYUDlV4c+FEXipCx5x/PkUw5I9znxMmxGES3gPCFCwEGvZ5Fc3N40t9fQx359JxhthbctJMWTwILEx0DyU42iUbPkPQubLP2NGWDbuuLWgZ30a+n8xuZM5JFs7hBWMlvqBq9Mxu7rwWw9blZZRLVCVAlA4y0q55AblS8UZZEdrZsx9p+q4ywU/lxP3pb9ELbOyGSEey5OVfOQo9ogJh3HyIzB2OGEHj/nfGlcRMpGCmGaJ/knf1AxlOp/xFXjU+e6OBqCWG8vJq1oQrSsZmgnbEfCjuEO6HkQhtJQqZzHZtlTa2ldbPRiBwqJ29JqOetTI+4Hn9h3gq3T0HDKuuiTyC9y1NLXY7jWrLTC5Zrvs+jnasClgkDTdnH2sV8i+1LjZOvYtpxUYFIjHkDK5vB+mOSzVjuxqxPsI5g2T8n0DMxBOPrw== pr26271@gmail.com"
-
-- hosts: workstations 
-  become: true
-  tasks:
-
-    - name: install unzip
-      package:
-        name: unzip
-
-    - name: install terraform
-      unarchive:
-        src: https://releases.hashicorp.com/terraform/1.9.2/terraform_1.9.2_linux_amd64.zip
-        dest: /usr/local/bin
-        remote_src: yes
-        mode: 0755
-        owner: root
-        group: root
-
-
+  roles:
+    - db_servers
 
