@@ -1,0 +1,10 @@
+---
+- name: remove index.html
+  hosts: all
+  become: true
+  tasks:
+
+  - name: remove the index.html file from directory
+    file: 
+      path: /var/www/html/index.html
+      state: absent  

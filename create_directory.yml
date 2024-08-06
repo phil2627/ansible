@@ -1,0 +1,13 @@
+---
+- name: Creating a directory
+  hosts: all
+  become: true
+  gather_facts: no
+  tasks:
+
+  - name: Create directory
+    file: 
+      path: /home/ansible/dir1
+      state: directory
+
+

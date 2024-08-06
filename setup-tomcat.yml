@@ -1,0 +1,51 @@
+---
+- name: Setup Tomcat Server on Redhat
+  hosts: all
+  become: true
+  tasks:
+
+    - name: Install Java
+      dnf:
+        name: java
+        state: installed
+      when: ansible_distribution == "RedHat"
+
+    - name: Install Java on Ubuntu
+      apt:
+        name: default-jdk
+        state: present
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Download Tomcat packages
+      get_url:
+        url: https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.26/bin/apache-tomcat-10.1.26.tar.gz
+        dest: /opt
+        mode: 0440
+
+    - name: Create Folder Inside Opt for Tomcat download
+      file:
+        path: /opt/tomcat
+        state: directory
+        mode: 0775
+            
+    - name: Extract Tar download
+      unarchive:
+        src: /opt/apache-tomcat-10.1.26.tar.gz
+        dest: /opt/tomcat
+        remote_src: yes
+
+    - name: Give Executing permission to startup.sh and shutdown.sh
+      file:
+        path: /opt/tomcat/apache-tomcat-10.1.26/bin/startup.sh
+        mode: 0777
+
+    - name: Start Tomcat Services
+      shell: "nohup ./startup.sh"
+      args:
+        chdir: /opt/tomcat/apache-tomcat-10.1.26/bin
+
+
+
+
+
+

@@ -1,7 +1,7 @@
-[ungrouped]
-#ansibleclient1.iamlab.local	#192.168.11.85
-#ansibleclient2.iamlab.local	#192.168.11.86
-#ansibledb.iamlab.local		#192.168.11.88
+[servers1]
+192.168.11.85 new_hostname=ansibleclient1
+192.168.11.86 new_hostname=ansibleclient2
+192.168.11.88 new_hostname=ansibledb
   
 
 [servers]
@@ -10,14 +10,14 @@
 192.168.11.88
 192.168.11.156
 
-[app_servers]
+[appservers]
 192.168.11.86 
 192.168.11.156
 
 [db_servers]
 192.168.11.88
 
-[file_servers]
+[webservers]
 192.168.11.85
 
 [workstations]

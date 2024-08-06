@@ -1,0 +1,17 @@
+---
+- name: ansible playbook to copy a file
+  hosts: all
+  become: true
+  tasks:
+
+    - name: copy a file
+      copy:
+        src: /home/ansible/repo/ansible/index.html
+        dest: /home/ansible/index.html
+        mode: 0600
+        owner: Peter
+
+    - name: remove bad  file
+      file:
+        path: /home/ansible/ansible
+        state: absent

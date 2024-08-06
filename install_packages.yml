@@ -1,0 +1,19 @@
+---
+- name: this playbook install packages
+  hosts:  all
+  become: true
+  tasks:
+
+    - name: install package
+      dnf: 
+    #    name: ['git','make','gcc', 'wget', 'telnet', 'gzip']
+        name: " {{ item }} "
+        state: installed
+
+      with_items:
+        - git
+        - make
+        - gzip
+        - wget
+        - telnet
+        - gcc

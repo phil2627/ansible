@@ -1,0 +1,32 @@
+---
+- name: use playbook to uninstall Apache on servers
+  hosts: all
+  become: true
+  tasks: 
+
+    - name: stop httpd server
+      service: 
+        name: httpd
+        enabled: yes
+        state: stopped
+      when: ansible_distribution == "RedHat"
+
+    - name: remove Apache
+      dnf:
+        name: httpd
+        state: absent
+      when: ansible_distribution == "RedHat"
+
+    - name: stop apache2 server
+      service: 
+        name: apache2
+        enabled: yes
+        state: stopped
+      when: ansible_distribution == "Ubuntu"
+      
+    - name: remove Apache2
+      apt:
+        name: apache2
+        state: absent
+      when: ansible_distribution == "Ubuntu"
+

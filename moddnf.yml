@@ -1,9 +1,0 @@
----
-- name: Install IDM client
-  hosts: 192.168.11.150
-  become: true
-  tasks:
-    - name: Enable dnf module idm:DL1
-      ansible.builtin.dnf:
-        enablerepo: idm:DL1
-        state: present

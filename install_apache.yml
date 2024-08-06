@@ -1,36 +1,52 @@
 ---
-
-- hosts: all
+- name: use playbook to install Apache on servers
+  hosts: all
   become: true
-  tasks:
+  tasks: 
 
-  - name: install apache and php for Ubuntu servers
-    apt:
-      name:
-         - apache2
-         - libapache2-mod-php
-      state: latest
-      update_cache: yes
-    become: true
-  when: ansible_distribution == "Ubuntu"
-
-  - name: install apache and php for RedHat servers
+  - name: install Apache
     dnf:
-      name:
-         - httpd
-         - php
-      state: latest
-      update_cache: yes
-   when: ansible_distribution == "Redhat"
-
-  - name: start apache
-    systemd: 
       name: httpd
-      state: started
-      enabled: yes 
+      state: present
+      #notify: start httpd service
+    when: ansible_distribution == "RedHat"
+  
 
-  - name: start memcached
-    service: 
-      name: memcached
+    #handlers:
+  - name: start httpd service
+    service:
+      name: httpd
+      #      enabled: yes
       state: started
+
+    when: ansible_distribution == "RedHat"
+  
+
+    #- name: copy index.html
+    #copy:
+    #  src: /home/ansible/repo/ansible/index.html
+    #  dest: /var/www/html
+    #  mode: 666
+
+  - name: install Apache - Ubuntu
+    apt:
+      name: apache2
+      state: latest
+      # notify: start apache2 service
+    when: ansible_distribution == "Ubuntu"
+    ignore_errors: yes
+
+    #handlers:    
+  - name: start apache2 service
+    service:
+       name: apache2
+       state: started
+    when: ansible_distribution == "Ubuntu"
+    ignore_errors: yes 
+
+  - name: copy index.html
+    copy:
+      src: /home/ansible/repo/ansible/index.html
+      dest: /var/www/html
+      mode: 0666
 

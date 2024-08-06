@@ -1,0 +1,9 @@
+---
+- hosts: servers1
+  become: yes
+  tasks:
+
+    - name: Change server hostname
+      hostname:
+        name: "{{ new_hostname }}"
+
