@@ -1,0 +1,9 @@
+---
+- name: Install git
+  hosts: 192.168.11.88
+  become: true
+  tasks:
+    - name: install git
+      dnf:
+        name: git-all
+
