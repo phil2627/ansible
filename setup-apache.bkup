@@ -1,0 +1,74 @@
+---
+- name: use playbook to install Apache on servers
+  hosts: all
+  become: true
+  vars: 
+    port: 8082
+  tasks: 
+
+  - name: install Apache
+    dnf:
+      name: httpd
+      state: present
+    notify: start httpd service
+    when: ansible_distribution == "RedHat"
+    
+
+  - name: copy index.html
+    copy:
+      src: /home/ansible/repo/ansible/index.html
+      dest: /var/www/html
+      mode: 666
+
+  - name: change apache port to {{ port }}
+    lineinfile:
+      path: /etc/httpd/conf/httpd.conf
+      regexp: '^Listen'
+      insertafter: '^#Listen'
+      line: Listen {{ port }}
+    when: ansible_distribution == "RedHat"
+    notify: restart apache
+
+  - name: install Apache - Ubuntu
+    apt:
+      name: apache2
+      state: latest
+    notify: start apache2 service
+    when: ansible_distribution == "Ubuntu"
+    ignore_errors: yes
+
+  - name: copy index.html
+    copy:
+      src: /home/ansible/repo/ansible/index.html
+      dest: /var/www/html
+      mode: 0666
+
+  - name: change apache port to {{ port }}
+    lineinfile:
+      path: /etc/apache2/ports.conf
+      regexp: '^Listen'
+      insertafter: '# /etc/apache2/sites-enabled/000-default.conf'
+      line: Listen {{ port }}
+    when: ansible_distribution == "Ubuntu"
+
+  handlers:
+  - name: start httpd service
+    service:
+      name: httpd
+      state: started
+    when: ansible_distribution == "RedHat"
+    ignore_errors: yes
+ 
+  - name: start apache2 service
+    service:
+       name: apache2
+       state: started
+    when: ansible_distribution == "Ubuntu"
+    ignore_errors: yes
+
+  - name: restart apache
+    service:
+      name: httpd
+      state: restarted
+    when: ansible_distribution == "RedHat"
+

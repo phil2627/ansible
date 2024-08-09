@@ -5,6 +5,12 @@
   become: true
   tasks:
 
+   - name: change SELinux to Permissive mode
+     selinux:
+       policy: targeted
+       state: permissive
+
+
    - name: Open Apache ports in the firewall
      firewalld:
         port: "{{ item }}"
@@ -15,7 +21,10 @@
        - "443/tcp"
        - "389/tcp"
        - "389/udp"
-   
+       - "8081/tcp"
+       - "8082/tcp"
+       - "8080/tcp"
+
    - name: Ensure HTTPD service is started
      ansible.builtin.service:
         name: httpd

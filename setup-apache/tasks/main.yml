@@ -1,0 +1,47 @@
+---
+# tasks file for setup-apache
+
+- name: install Apache
+  dnf:
+    name: httpd
+    state: present
+  notify: start httpd service
+  when: ansible_distribution == "RedHat"
+
+
+- name: copy index.html
+  copy:
+    src: /home/ansible/repo/ansible/index.html
+    dest: /var/www/html
+    mode: 666
+
+- name: change apache port to {{ port }}
+  lineinfile:
+    path: /etc/httpd/conf/httpd.conf
+    regexp: '^Listen'
+    insertafter: '^#Listen'
+    line: Listen {{ port }}
+  when: ansible_distribution == "RedHat"
+  notify: restart apache
+
+- name: install Apache - Ubuntu
+  apt:
+    name: apache2
+    state: latest
+  notify: start apache2 service
+  when: ansible_distribution == "Ubuntu"
+  ignore_errors: yes
+    
+- name: install Apache - Ubuntu
+  apt:
+    name: apache2
+    state: latest
+  notify: start apache2 service
+  when: ansible_distribution == "Ubuntu"
+  ignore_errors: yes
+
+- name: copy index.html
+  copy:
+    src: /home/ansible/repo/ansible/index.html
+    dest: /var/www/html
+    mode: 0666
